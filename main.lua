@@ -23,7 +23,7 @@ objects = {}
         objects.sideright.shape = love.physics.newRectangleShape(0, 1250)
         objects.sideright.fixture = love.physics.newFixture(objects.sideright.body, objects.sideright.shape)
 
-    objects.cutie1 = {}
+    objects.cutie1 = {scale=0.3}
         objects.cutie1.body = love.physics.newBody(world, 333, 400, "dynamic")
         objects.cutie1.shape = love.physics.newCircleShape( 20) 
         objects.cutie1.fixture = love.physics.newFixture(objects.cutie1.body, objects.cutie1.shape, 1) 
@@ -32,7 +32,7 @@ objects = {}
         objects.cutie1.cuteness = 1
         objects.cutie1.mobbeligkeit = 0
 
-    objects.cutie2 = {}
+    objects.cutie2 = {scale=0.3}
         objects.cutie2.body = love.physics.newBody(world, 666, 380, "dynamic")
         objects.cutie2.shape = love.physics.newCircleShape( 20) 
         objects.cutie2.fixture = love.physics.newFixture(objects.cutie2.body, objects.cutie2.shape, 1)
@@ -53,17 +53,28 @@ objects = {}
         mobtimes = 0
         cutelvl = 0
         dtotal = 0
+        scale = 0.3
 end
 
 function love.update(dt)
-     world:update(dt)
-   dtotal = dtotal + dt  
+    world:update(dt)
+    dtotal = dtotal + dt  
 
-   if dtotal >= 1 then
-
+    if dtotal >= 1 then
       dtotal = -dtotal
+    end
 
-   end
+    if objects.cutie1.body:getY() > 480 then
+        objects.cutie1.scale = 0.3-((objects.cutie1.body:getY()-480)/300)
+    else
+        objects.cutie1.scale = 0.3
+    end
+
+    if objects.cutie2.body:getY() > 480 then
+        objects.cutie2.scale = 0.3-((objects.cutie2.body:getY()-480)/300)
+    else
+        objects.cutie2.scale = 0.3
+    end
 end
 
 
@@ -72,8 +83,8 @@ function love.draw()
     if objects.cutie1.life > 0 and objects.cutie2.life > 0 then
 
         love.graphics.draw(background, 0, 0)
-        love.graphics.draw(cutie1, objects.cutie1.body:getX(), objects.cutie1.body:getY(), 0, 0.3, 0.3)
-        love.graphics.draw(cutie2, objects.cutie2.body:getX(), objects.cutie2.body:getY(), 0, 0.3, 0.3)
+        love.graphics.draw(cutie1, objects.cutie1.body:getX(), objects.cutie1.body:getY(), 0, 0.3, objects.cutie1.scale)
+        love.graphics.draw(cutie2, objects.cutie2.body:getX(), objects.cutie2.body:getY(), 0, 0.3, objects.cutie2.scale)
 
         -- love.graphics.setColor(50, 50, 50)
         -- love.graphics.polygon("fill", objects.block1.body:getWorldPoints(objects.block1.shape:getPoints()))
