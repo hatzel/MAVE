@@ -26,11 +26,11 @@ objects = {}
     objects.cutie1 = {}
         objects.cutie1.body = love.physics.newBody(world, 333, 400, "dynamic")
         objects.cutie1.shape = love.physics.newCircleShape( 20) 
-        objects.cutie1.fixture = love.physics.newFixture(objects.cutie1.body, objects.cutie1.shape, 1) -- Attach fixture to body and give it a density of 1.
+        objects.cutie1.fixture = love.physics.newFixture(objects.cutie1.body, objects.cutie1.shape, 1) 
         objects.cutie1.fixture:setRestitution(1) 
         objects.cutie1.life = 100
         objects.cutie1.cuteness = 1
-        objects.cutie1.mobbelligkeit = 1
+        objects.cutie1.mobbeligkeit = 0
 
     objects.cutie2 = {}
         objects.cutie2.body = love.physics.newBody(world, 666, 380, "dynamic")
@@ -39,7 +39,7 @@ objects = {}
         objects.cutie2.fixture:setRestitution(1.0) 
         objects.cutie2.life = 100
         objects.cutie2.cuteness = 1
-        objects.cutie2.mobbelligkeit = 1
+        objects.cutie2.mobbeligkeit = 0
 
         love.graphics.setMode(1000, 600, false, true, 0)
 
@@ -69,89 +69,114 @@ end
 
 function love.draw() 
 
-    --while cutelvl <= 10 do
+    if objects.cutie1.life > 0 and objects.cutie2.life > 0 then
 
-        if objects.cutie1.life > 0 and objects.cutie2.life > 0 then
+        love.graphics.draw(background, 0, 0)
+        love.graphics.draw(cutie1, objects.cutie1.body:getX(), objects.cutie1.body:getY(), 0, 0.3, 0.3)
+        love.graphics.draw(cutie2, objects.cutie2.body:getX(), objects.cutie2.body:getY(), 0, 0.3, 0.3)
 
-            love.graphics.draw(background, 0, 0)
-            love.graphics.draw(cutie1, objects.cutie1.body:getX(), objects.cutie1.body:getY(), 0, 0.3, 0.3)
-            love.graphics.draw(cutie2, objects.cutie2.body:getX(), objects.cutie2.body:getY(), 0, 0.3, 0.3)
+        -- love.graphics.setColor(50, 50, 50)
+        -- love.graphics.polygon("fill", objects.block1.body:getWorldPoints(objects.block1.shape:getPoints()))
+        -- love.graphics.polygon("fill", objects.block2.body:getWorldPoints(objects.block2.shape:getPoints()))
+    
 
-            -- love.graphics.setColor(50, 50, 50)
-            -- love.graphics.polygon("fill", objects.block1.body:getWorldPoints(objects.block1.shape:getPoints()))
-            -- love.graphics.polygon("fill", objects.block2.body:getWorldPoints(objects.block2.shape:getPoints()))
-        
+        if objects.cutie1.body:getX() < objects.cutie2.body:getX() then
 
-            if objects.cutie1.body:getX() < objects.cutie2.body:getX() then
+            objects.cutie1.body:applyForce( 100, 5)
+            objects.cutie2.body:applyForce( -100, 5)
+        end
 
-                objects.cutie1.body:applyForce( 100, 5)
-                objects.cutie2.body:applyForce( -100, 5)
-            end
+        if objects.cutie2.body:getX() < objects.cutie1.body:getX() then
 
-            if objects.cutie2.body:getX() < objects.cutie1.body:getX() then
+            objects.cutie2.body:applyForce( 100, 5)
+            objects.cutie1.body:applyForce( -100, 5)
+        end
 
-                objects.cutie2.body:applyForce( 100, 5)
-                objects.cutie1.body:applyForce( -100, 5)
-            end
+        if objects.cutie2.body:getY() < 545 then
 
-            if objects.cutie2.body:getY() < 545 then
+            objects.cutie2.body:applyLinearImpulse( 0, 5) --sinnlos?
+        end
 
-                objects.cutie2.body:applyLinearImpulse( 0, 5)
-            end
+        if objects.cutie1.body:getY() < 545 then
 
-            if objects.cutie1.body:getY() < 545 then
+           objects.cutie1.body:applyLinearImpulse( 0, 5) --sinnlos?
+        end
 
-               objects.cutie1.body:applyLinearImpulse( 0, 5)
-            end
+        if math.abs(objects.cutie1.body:getY() - objects.cutie2.body:getY()) < 35 and math.abs(objects.cutie1.body:getX() - objects.cutie2.body:getX()) < 35 then
 
-            if math.abs(objects.cutie1.body:getY() - objects.cutie2.body:getY()) < 35 and math.abs(objects.cutie1.body:getX() - objects.cutie2.body:getX()) < 35 then
+            objects.cutie2.body:applyLinearImpulse( math.random(100, 200), math.random(50, 110))
+            objects.cutie1.body:applyLinearImpulse( math.random(100, 200), math.random(50, 110))
+            objects.cutie2.life = objects.cutie2.life - math.random(5) * objects.cutie1.cuteness
+            objects.cutie1.life = objects.cutie1.life - math.random(5) * objects.cutie2.cuteness
+        end
 
-                objects.cutie2.body:applyLinearImpulse( math.random(100, 200), math.random(50, 110))
-                objects.cutie1.body:applyLinearImpulse( math.random(100, 200), math.random(50, 110))
-                objects.cutie2.life = objects.cutie2.life - math.random(5) * objects.cutie1.cuteness
-                objects.cutie1.life = objects.cutie1.life - math.random(5) * objects.cutie2.cuteness
-            end
-
-        elseif objects.cutie1.life <= 0 or objects.cutie2.life <= 0 then
+    elseif objects.cutie1.life <= 0 or objects.cutie2.life <= 0 then
 
 
-            if objects.cutie1.life <= 0 then
+        if objects.cutie1.life <= 0 then
 
+            love.graphics.draw(bgmenu, 0, 0)
+            love.graphics.draw(cutie1, 500, 400, 0, 0.5, 0.5)
+            love.graphics.draw(kuddles, 250, 250, 0, 0.25, 0.25)
+            love.graphics.draw(cookies, 750, 250, 0, 0.25, 0.25)
+            x , y= love.mouse.getPosition( )
+
+            if love.keyboard.isDown('k') then
+                objects.cutie1.cuteness = objects.cutie1.cuteness + 1
                 love.graphics.draw(bgmenu, 0, 0)
-                love.graphics.draw(cutie1, 500, 400, 0, 0.5, 0.5)
-                love.graphics.draw(kuddles, 250, 250, 0, 0.25, 0.25)
-                love.graphics.draw(cookies, 750, 250, 0, 0.25, 0.25)
-                x , y= love.mouse.getPosition( )
+                -- Möchten sie weiterspielen? Bild und Break implementierung
+                -- Exit implementierung
+                if love.keyboard.isDown('a') then
+                    objects.cutie2.life = 100
 
-                if love.keyboard.isDown('k') then
-                    objects.cutie1.cuteness = objects.cutie1.cuteness + 1
-                    love.graphics.draw(bgmenu, 0, 0)
-                    -- Möchten sie weiterspielen? Bild und Break implementierung
-                    -- Exit implementierung
-
-                elseif love.keyboard.isDown('c') then
-                    objects.cutie1.mobbeligkeit = objects.cutie1.mobbeligkeit + 1
-                    mobtimes = mobtimes + 1
-                    objects.cutie1.life = 100 + mobtimes *10
-                    love.graphics.draw(bgmenu, 0, 0)
-                    -- Möchten sie weiterspielen? Bild und Break implementierung
-                    -- Exit implementierung
-                   
+                elseif love.keyboard.isDown('x') then
+                    love.event.quit()
                 end
 
-            elseif objects.cutie2.life <= 0 then
+
+            elseif love.keyboard.isDown('c') then
+                objects.cutie1.mobbeligkeit = objects.cutie1.mobbeligkeit + 1
+                mobtimes = mobtimes + 1
+                objects.cutie1.life = 100 + mobtimes *20
                 love.graphics.draw(bgmenu, 0, 0)
-                -- Sie wurden zu tode gecuted! Bild
                 -- Möchten sie weiterspielen? Bild und Break implementierung
                 -- Exit implementierung
+                if love.keyboard.isDown('a') then
+                    objects.cutie2.life = 100
 
-            elseif objects.cutie1.life <= 0 and objects.cutie2.life <= 0 then
-
-                love.graphics.draw(bgmenu, 0, 0)
-                -- Zerknuddelt. Die Cuties sin gleichsüß.
-                -- Möchten sie weiterspielen? Bild und Break implementierung
-                -- Exit implementierung
+                elseif love.keyboard.isDown('x') then
+                    love.event.quit()
+                end                     
             end
-        --end
+
+
+        elseif objects.cutie2.life <= 0 then
+            love.graphics.draw(bgmenu, 0, 0)
+            -- Sie wurden zu tode gecuted! Bild
+            -- Möchten sie weiterspielen? Bild und Break implementierung
+            -- Exit implementierung
+            if love.keyboard.isDown('a') then
+                objects.cutie2.life = 100
+                objects.cutie1.life = 100
+
+            elseif love.keyboard.isDown('x') then
+                love.event.quit()
+            end
+
+
+        elseif objects.cutie1.life <= 0 and objects.cutie2.life <= 0 then
+
+            love.graphics.draw(bgmenu, 0, 0)
+            -- Zerknuddelt. Die Cuties sin gleichsüß.
+            -- Möchten sie weiterspielen? Bild und Break implementierung
+            -- Exit implementierung
+            if love.keyboard.isDown('a') then
+                objects.cutie2.life = 100
+                objects.cutie1.life = 100
+
+            elseif love.keyboard.isDown('x') then
+                love.event.quit()
+            end
+        end
     end
 end
